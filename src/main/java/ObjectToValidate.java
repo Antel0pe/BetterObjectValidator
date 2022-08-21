@@ -1,6 +1,5 @@
 import lombok.Getter;
 import lombok.ToString;
-import org.hamcrest.Matcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.util.Map;
 
 @Getter //todo requires getter
 @ToString
-public class ObjectToValidate extends BetterValidatorV1{
+public class ObjectToValidate {//extends BetterValidatorV1{
     private String word;
     public int num;
 
@@ -33,11 +32,6 @@ public class ObjectToValidate extends BetterValidatorV1{
 
     public ObjectToValidate num(int num){
         this.num = num;
-        return this;
-    }
-
-    public ObjectToValidate num(Matcher m){
-        this.matchers.put("num", m);
         return this;
     }
 

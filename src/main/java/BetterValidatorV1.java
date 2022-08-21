@@ -1,4 +1,4 @@
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matcher;
 
 import java.beans.IntrospectionException;
@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class BetterValidatorV1 {
     //todo make matchers list of matchers
     protected Map<String,  Matcher> matchers;
@@ -16,14 +18,23 @@ public class BetterValidatorV1 {
         matchers = new HashMap<>();
     }
 
-    public void getSetFields(BetterValidatorV1 obj){
+    public void validate(ObjectToValidate obj){
         for (String key: matchers.keySet()){
-            System.out.println(key);
+            try {
+                assertThat(String.format("Property '%s' is not valid", key),
+                        PropertyUtils.getProperty(obj, key), matchers.get(key));
+            } catch (Exception e){}
+        }
+    }
+
+    public void getSetFields(ObjectToValidate obj){
+        for (String key: matchers.keySet()){
+            //System.out.println(key);
            try {
                 System.out.printf(
                         "%s -> %s",
                         key,
-                        BeanUtils.getProperty(obj.getClass(), key)
+                        PropertyUtils.getProperty(obj, key)
                 );
             } catch (Exception e){
 
