@@ -1,10 +1,7 @@
 import lombok.Getter;
 import org.hamcrest.Matcher;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class ValidationObject extends BetterValidatorV1{
@@ -34,7 +31,7 @@ public class ValidationObject extends BetterValidatorV1{
         return this;
     }
 
-    public ValidationObject word(Matcher m){
+    public ValidationObject word(Matcher<?> m){
         this.matchers.put("word", m);
         return this;
     }

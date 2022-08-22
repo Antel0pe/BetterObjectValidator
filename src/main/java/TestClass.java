@@ -16,29 +16,14 @@ public class TestClass{
                         "k2", List.of("v3", "v4")))
                 .build();
 
-//        ObjectToValidate validator = ObjectToValidate.builder()
-//                .num(equalTo(3))
-//                .build();
-
-        //System.out.println(validator.toString());
-
-        //System.out.println(objectToValidate.getNum());
-
-        //objectToValidate.getNonNullFields();
-        //objectToValidate.getSetFields();
-        //validator.getSetFields();
-        //validator.getSetFields(objectToValidate);
-
-        //System.out.println(PropertyUtils.getProperty(objectToValidate.getClass()., "num"));
-        //System.out.println(objectToValidate.getClass().getDeclaredField("num"));
-
         ValidationObject validationObject = ValidationObject.builder()
-                .num(equalTo(2))
+                .num(equalTo(3))
                 .word(equalTo("word"))
                 .build();
 
-        //validationObject.getSetFields(objectToValidate);
         validationObject.validate(objectToValidate);
+
+        System.out.println(validationObject.getFieldBuilderMethods("ValidationClass"));
 
     }
 }
