@@ -29,8 +29,17 @@ public class BetterValidatorV1 {
     }
 
     public void generateClass(){
-        try (FileWriter writer = new FileWriter("MockValidationClass")){
-            //getImports().forEach(l -> writer.write(l););
+        final String validationClass = "MockValidationClass";
+        final String parentClass = "MockParentClass";
+
+        try (FileWriter writer = new FileWriter(validationClass)){
+            List<List<String>> code = getCode(validationClass, parentClass);
+
+            for(List<String> section: code){
+                for(String line: section){
+                    writer.write(line);
+                }
+            }
         } catch (FileNotFoundException e){
             System.out.println("File not found");
         } catch (IOException e){
@@ -38,38 +47,58 @@ public class BetterValidatorV1 {
         }
     }
 
-    public List<String> getImports(){
-        List<String> result = new ArrayList<>();
+    public List<List<String>> getCode(String validationClass, String parentClass){
+        List<List<String>> result = new ArrayList<>(
+                List.of(
+                        getImports(""),
+                        List.of("\n\n"),
+                        getClassDeclaration("", validationClass, parentClass),
+                        List.of("\n"),
+                        getBoilerplateMethods("\t", validationClass),
+                        List.of("\n")));
 
-        result.add("import org.hamcrest.Matcher;");
+        result.addAll(getFieldBuilderMethods("\t", validationClass));
+        result.add(List.of("\n"));
+        result.add(List.of("}"));
 
         return result;
     }
 
-    public String getClassDeclaration(String validationClass, String parentClass){
-        return "public class " + validationClass + " extends " + parentClass;
+    public List<String> getImports(String offset){
+        List<String> result = new ArrayList<>();
+
+        result.add(offset + "import org.hamcrest.Matcher;");
+
+        return result;
     }
 
-    public List<String> getBoilerplateMethods(String validationClass){
+    public List<String> getClassDeclaration(String offset, String validationClass, String parentClass){
         return List.of(
-                String.format("public %s () { super(); }", validationClass), //todo want a parent class?
-                String.format("public static %s builder() { return new %s(); }", validationClass, validationClass),
-                String.format("public %s builder() { return this; }", validationClass)
+                offset + "public class " + validationClass + " extends " + parentClass + "{");
+    }
+
+    public List<String> getBoilerplateMethods(String offset, String validationClass){
+        return List.of(
+                String.format("%spublic %s () { super(); }\n", offset, validationClass), //todo want a parent class?
+                String.format("%spublic static %s builder() { return new %s(); }\n", offset, validationClass, validationClass),
+                String.format("%spublic %s builder() { return this; }\n", offset, validationClass)
         );
     }
 
 
-    public List<List<String>> getFieldBuilderMethods(String validationClass){
+    public List<List<String>> getFieldBuilderMethods(String offset, String validationClass){
         List<List<String>> result = new ArrayList<>();
 
         for (String key: matchers.keySet()){
             List<String> method = new ArrayList<>();
 
-            method.add(String.format("public %s %s(Matcher<?> m){", validationClass, key));
-            method.add(String.format("\tthis.matchers.put(\"%s\", m);", key));
-            method.add(String.format("return this;"));
+            method.add(String.format("%spublic %s %s(Matcher<?> m){\n", offset, validationClass, key));
+            method.add(String.format("%s\tthis.matchers.put(\"%s\", m);\n", offset, key));
+            method.add(String.format("%s\treturn this;\n", offset));
+            method.add(String.format("%s}\n", offset));
 
             result.add(method);
+            result.add(List.of("\n"));
         }
 
         return result;

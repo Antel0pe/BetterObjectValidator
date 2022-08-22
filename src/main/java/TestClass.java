@@ -23,7 +23,7 @@ public class TestClass{
 
         validationObject.validate(objectToValidate);
 
-        System.out.println(validationObject.getFieldBuilderMethods("ValidationClass"));
-
+        //System.out.println(validationObject.getFieldBuilderMethods("ValidationClass"));
+        validationObject.generateClass();
     }
 }
