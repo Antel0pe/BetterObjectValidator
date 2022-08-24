@@ -4,27 +4,42 @@ import org.hamcrest.Matcher;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BetterValidatorV1 {
-    //todo make matchers list of matchers
-    protected Map<String, Matcher> matchers; //todo figure out generic params
+public abstract class BetterValidatorV1<T extends BetterValidatorV1<T>> {
+    protected Map<String, List<Matcher<? super Object>>> matchers;
+    protected String asserts;
 
     public BetterValidatorV1(){
         matchers = new HashMap<>();
     }
 
+    public T asserts(String message){
+        this.asserts = message;
+        return getThis();
+    }
+
+    public T build(){
+        return getThis();
+    }
+
+    public abstract T getThis();
+
+
+
     public void validate(ObjectToValidate obj){
-        for (String key: matchers.keySet()){
+        for (String key: matchers.keySet()) {
             try {
-                assertThat(String.format("Property '%s' is not valid", key),
-                        PropertyUtils.getProperty(obj, key), matchers.get(key));
-            } catch (Exception e){}
+                for(Matcher<? super Object> m: matchers.get(key))
+                    assertThat(String.format("Property '%s' is not valid", key),
+                            PropertyUtils.getProperty(obj, key), m);
+            } catch (AssertionError ae){
+                System.out.println("Assertion failed");
+            } catch (Exception e){
+                System.out.println("General exception");
+            }
         }
     }
 
@@ -81,7 +96,8 @@ public class BetterValidatorV1 {
         return List.of(
                 String.format("%spublic %s () { super(); }\n", offset, validationClass), //todo want a parent class?
                 String.format("%spublic static %s builder() { return new %s(); }\n", offset, validationClass, validationClass),
-                String.format("%spublic %s builder() { return this; }\n", offset, validationClass)
+                String.format("%s@Override\n", offset),
+                String.format("%spublic %s getThis() { return this; }\n", offset, validationClass)
         );
     }
 
@@ -92,8 +108,10 @@ public class BetterValidatorV1 {
         for (String key: matchers.keySet()){
             List<String> method = new ArrayList<>();
 
-            method.add(String.format("%spublic %s %s(Matcher<?> m){\n", offset, validationClass, key));
-            method.add(String.format("%s\tthis.matchers.put(\"%s\", m);\n", offset, key));
+            method.add(String.format("%s@SafeVarargs", offset));
+            method.add(String.format("%spublic %s %s(Matcher<? super Object>... matchers){\n", offset, validationClass, key));
+            method.add(String.format("%s\tfor(Matcher<? super Object> m: matchers)", offset));
+            method.add(String.format("%s\t\tthis.matchers.put(\"%s\", m);\n", offset, key));
             method.add(String.format("%s\treturn this;\n", offset));
             method.add(String.format("%s}\n", offset));
 

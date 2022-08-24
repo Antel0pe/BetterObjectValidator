@@ -1,12 +1,12 @@
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TestClass{
 
-    public static void main(String[] args) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException {
+    public static void main(String[] args) {
         ObjectToValidate objectToValidate = ObjectToValidate.builder()
                 .num(3)
                 .word("word")
@@ -17,11 +17,12 @@ public class TestClass{
                 .build();
 
         ValidationObject validationObject = ValidationObject.builder()
-                .num(equalTo(3))
+                .asserts("validation obj is correct")
+                .num(equalTo(3), notNullValue())
                 .word(equalTo("word"))
                 .build();
 
-        validationObject.validate(objectToValidate);
+        //validationObject.validate(objectToValidate);
 
         //System.out.println(validationObject.getFieldBuilderMethods("ValidationClass"));
         validationObject.generateClass();
