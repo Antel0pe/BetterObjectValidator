@@ -37,8 +37,8 @@ public class ValidationObject extends BetterValidatorV1<ValidationObject>{
     }
 
     @SafeVarargs
-    public final ValidationObject word(Matcher<? super Object>... matchers){
-        for(Matcher<? super Object> m: matchers)
+    public final ValidationObject word(Matcher<? super Object>... match){
+        for(Matcher<? super Object> m: match)
             this.matchers.getOrDefault("word", new ArrayList<>()).add(m);
         return this;
     }

@@ -102,6 +102,7 @@ public abstract class BetterValidatorV1<T extends BetterValidatorV1<T>> {
     }
 
 
+    //todo not returning anything
     public List<List<String>> getFieldBuilderMethods(String offset, String validationClass){
         List<List<String>> result = new ArrayList<>();
 
@@ -109,8 +110,8 @@ public abstract class BetterValidatorV1<T extends BetterValidatorV1<T>> {
             List<String> method = new ArrayList<>();
 
             method.add(String.format("%s@SafeVarargs", offset));
-            method.add(String.format("%spublic %s %s(Matcher<? super Object>... matchers){\n", offset, validationClass, key));
-            method.add(String.format("%s\tfor(Matcher<? super Object> m: matchers)", offset));
+            method.add(String.format("%spublic %s %s(Matcher<? super Object>... match){\n", offset, validationClass, key));
+            method.add(String.format("%s\tfor(Matcher<? super Object> m: match)", offset));
             method.add(String.format("%s\t\tthis.matchers.put(\"%s\", m);\n", offset, key));
             method.add(String.format("%s\treturn this;\n", offset));
             method.add(String.format("%s}\n", offset));
