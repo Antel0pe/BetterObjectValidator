@@ -1,0 +1,19 @@
+import org.hamcrest.Matcher;
+
+public class {{class}} extends BetterValidatorV1{
+    public {{class}}() { super(); }
+    public static {{class}} builder(){ return new {{class}}(); }
+
+    @Override
+    public {{class}} getThis() { return this; }
+
+
+    {{#fields}}
+    @SafeVarargs
+    public final {{class}} {{.}}(Matcher<? super Object>... matchers){
+        this.matchers.get("{{.}}").addAll(List.of(matchers));
+        return this;
+    }
+    {{/fields}}
+
+}
