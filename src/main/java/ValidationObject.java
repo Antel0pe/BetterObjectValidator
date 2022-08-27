@@ -1,21 +1,16 @@
 import lombok.Getter;
 import org.hamcrest.Matcher;
 
-import java.util.*;
+import java.util.List;
+
 
 @Getter
-public class ValidationObject extends BetterValidatorV1<ValidationObject>{
+public class ValidationObject extends ValidatorBase<ValidationObject> {
     private String word;
     public int num;
 
-    private List<Integer> listOfNums;
-    private Map<String, List<String>> mapOfStrings;
-
     public ValidationObject(){
         super();
-
-        listOfNums = new ArrayList<>();
-        mapOfStrings = new HashMap<>();
     }
 
     public static ValidationObject builder(){

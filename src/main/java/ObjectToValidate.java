@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Getter //todo requires getter
 @ToString
+@Validator
 public class ObjectToValidate {//extends BetterValidatorV1{
     private String word;
     public int num;
