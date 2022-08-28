@@ -1,3 +1,5 @@
+package com.BetterValidator;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,7 +11,7 @@ import java.util.Map;
 @Getter //todo requires getter
 @ToString
 @Validator
-public class ObjectToValidate {//extends BetterValidatorV1{
+public class ObjectToValidate {
     private String word;
     public int num;
 

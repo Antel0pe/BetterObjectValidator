@@ -1,3 +1,5 @@
+package com.BetterValidator;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import org.apache.commons.beanutils.PropertyUtils;

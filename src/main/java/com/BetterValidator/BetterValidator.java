@@ -1,53 +1,53 @@
+package com.BetterValidator;
+
 import com.google.auto.service.AutoService;
 import com.samskivert.mustache.Mustache;
 import lombok.Cleanup;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
-@SupportedAnnotationTypes("Validator")
+@SupportedAnnotationTypes("com.BetterValidator.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class BetterValidator extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env){
+        try {
+            FileWriter writer = new FileWriter(new File("hello.java"));
+            writer.write("hello");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         // annotations should be size 1
 
-        for (TypeElement a: annotations){
-            Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
-
-            if (annotatedClasses.isEmpty()) continue;
-
-            assertThat("how many annotated elements", annotatedClasses, hasSize(1));
-            Element element = annotatedClasses.stream().toList().get(0);
-
-
-
-            try {
-                generateClass(Class.forName(String.valueOf(a.getQualifiedName())));
-            } catch (IntrospectionException | IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        for (TypeElement a: annotations){
+//            Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
+//
+//            if (annotatedClasses.isEmpty()) continue;
+//
+//
+//            assertThat("how many annotated elements", annotatedClasses, hasSize(1));
+//            String className = annotatedClasses.stream().toList().get(0).getSimpleName().toString();
+//
+//            try {
+//                //generateClass(Class.forName(String.valueOf(a.getQualifiedName())));
+//                generateClass(annotatedClasses.stream().toList().get(0).getClass());
+//            } catch (IntrospectionException | IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         return true;
     }
@@ -55,14 +55,14 @@ public class BetterValidator extends AbstractProcessor {
     public void generateClass(Class<?> clazz) throws IntrospectionException, IOException {
         final String pathToTemplate = "src/main/java/";
         final String template = "src/main/java/GeneratedClassTemplate.mustache";
-        final String className = clazz.getName() + "Validator";
+        final String className = clazz.getName() + "com.BetterValidator.Validator";
 
 
         List<String> fields = Arrays.stream(Introspector.getBeanInfo(clazz).getPropertyDescriptors())
                 .map(PropertyDescriptor::getName)
                 .filter(s -> !s.equalsIgnoreCase("class")).toList();
 
-        @Cleanup FileReader file = new FileReader(template);
+        FileReader file = new FileReader(template);
 
         JavaFileObject generatedFile = processingEnv.getFiler().createSourceFile(className);
         @Cleanup PrintWriter writer = new PrintWriter(generatedFile.openWriter());

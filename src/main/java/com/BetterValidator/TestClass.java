@@ -1,3 +1,7 @@
+package com.BetterValidator;
+
+import com.BetterValidator.ObjectToValidate;
+
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +16,7 @@ public class TestClass{
         ObjectToValidate objectToValidate = ObjectToValidate.builder()
                 .num(3)
                 .word("word")
-                .listOfNums(List.of(1, 2, 3))
+                .listOfNums(List.of(1, 2, 5))
                 .mapOfStrings(Map.of(
                         "k1", List.of("v1", "v2"),
                         "k2", List.of("v3", "v4")))
@@ -24,9 +28,6 @@ public class TestClass{
                 .word(equalTo("word"))
                 .build();
 
-        //validationObject.validate(objectToValidate);
-
-        //System.out.println(validationObject.getFieldBuilderMethods("ValidationClass"));
 
     }
 }

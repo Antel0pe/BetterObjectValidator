@@ -1,3 +1,5 @@
+package com.BetterValidator;
+
 import lombok.Getter;
 import org.hamcrest.Matcher;
 
