@@ -1,15 +1,11 @@
 package com.BetterValidator;
 
-import lombok.Getter;
-import lombok.ToString;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter //todo requires getter
-@ToString
+
 @Validator
 public class ObjectToValidate {
     private String word;

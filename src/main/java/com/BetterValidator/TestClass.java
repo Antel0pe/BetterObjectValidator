@@ -1,7 +1,5 @@
 package com.BetterValidator;
 
-import com.BetterValidator.ObjectToValidate;
-
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.util.List;
@@ -9,6 +7,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+
 
 public class TestClass{
 
@@ -28,6 +27,12 @@ public class TestClass{
                 .word(equalTo("word"))
                 .build();
 
+        com.BetterValidator.ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
+                .num(equalTo(2), notNullValue())
+                .build();
+
+
+        validateValidator.validate(objectToValidate);
 
     }
 }

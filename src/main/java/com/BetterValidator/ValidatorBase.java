@@ -2,8 +2,9 @@ package com.BetterValidator;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matcher;
+
+import java.lang.reflect.Field;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -28,20 +29,23 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
 
 
 
-    public T validate(ObjectToValidate obj) {
+    public T validate(Object obj) {
         for (String key : matchers.keySet()) {
             try {
-                for (Matcher<? super Object> m : matchers.get(key))
+                for (Matcher<? super Object> m : matchers.get(key)){
+                    Field f = obj.getClass().getDeclaredField(key);
+                    f.setAccessible(true);
+
                     assertThat(String.format("Property '%s' is not valid", key),
-                            PropertyUtils.getProperty(obj, key), m);
-            } catch (AssertionError ae) {
-                System.out.println("Assertion failed");
+                            //PropertyUtils.getProperty(obj, key), m);
+                            f.get(obj), m);
+                }
             } catch (Exception e) {
-                System.out.println("General exception");
+                throw new RuntimeException(e);
             }
         }
 
-        return (T) getThis();
+        return getThis();
     }
 
 

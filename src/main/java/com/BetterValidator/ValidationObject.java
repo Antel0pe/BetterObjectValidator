@@ -1,12 +1,10 @@
 package com.BetterValidator;
 
-import lombok.Getter;
 import org.hamcrest.Matcher;
 
 import java.util.List;
 
 
-@Getter
 public class ValidationObject extends ValidatorBase<ValidationObject> {
     private String word;
     public int num;

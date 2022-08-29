@@ -14,7 +14,7 @@ rough outline
 - Annotate class with @Validate
 - Generates class with all the same fields
   - Possible to make generated class inherit or does each class need its own functionality
-- Generated class name: original class name + com.BetterValidator.Validator
+- Generated class name: original class name + Validator
 - Generated class has builder pattern to assign assertions to each field
   - Can assign multiple assertions to each field
     - on one line
