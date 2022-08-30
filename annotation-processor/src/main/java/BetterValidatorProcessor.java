@@ -1,5 +1,3 @@
-package com.BetterValidator;
-
 import com.google.auto.service.AutoService;
 import com.samskivert.mustache.Mustache;
 
@@ -7,6 +5,7 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -37,6 +36,8 @@ public class BetterValidatorProcessor extends AbstractProcessor {
 
         for (TypeElement a: annotations){
             Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
+
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "HELLO HERE SEE THIS", annotatedClasses.stream().toList().get(0));
 
             if (annotatedClasses.isEmpty()) continue;
 

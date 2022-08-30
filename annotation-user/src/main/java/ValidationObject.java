@@ -1,5 +1,3 @@
-package com.BetterValidator;
-
 import org.hamcrest.Matcher;
 
 import java.util.List;

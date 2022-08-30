@@ -1,5 +1,3 @@
-package com.BetterValidator;
-
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.util.List;
@@ -27,12 +25,12 @@ public class TestClass{
                 .word(equalTo("word"))
                 .build();
 
-        com.BetterValidator.ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
-                .num(equalTo(2), notNullValue())
-                .build();
-
-
-        validateValidator.validate(objectToValidate);
+//        ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
+//                .num(equalTo(2), notNullValue())
+//                .build();
+//
+//
+//        validateValidator.validate(objectToValidate);
 
     }
 }
