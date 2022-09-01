@@ -1,5 +1,3 @@
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class TestClass{
 
-    public static void main(String[] args) throws IntrospectionException, IOException {
+    public static void main(String[] args) {
         ObjectToValidate objectToValidate = ObjectToValidate.builder()
                 .num(3)
                 .word("word")
@@ -24,6 +22,8 @@ public class TestClass{
                 .num(equalTo(3), notNullValue())
                 .word(equalTo("word"))
                 .build();
+
+
 
 //        ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
 //                .num(equalTo(2), notNullValue())
