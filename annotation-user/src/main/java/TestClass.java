@@ -1,3 +1,5 @@
+import lombok.extern.slf4j.Slf4j;
+
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.util.List;
@@ -7,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 
+@Slf4j
 public class TestClass{
 
     public static void main(String[] args) throws IntrospectionException, IOException {
@@ -24,6 +27,9 @@ public class TestClass{
                 .num(equalTo(3), notNullValue())
                 .word(equalTo("word"))
                 .build();
+
+        log.error("something went wrong");
+
 
 //        ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
 //                .num(equalTo(2), notNullValue())

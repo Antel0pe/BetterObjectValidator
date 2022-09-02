@@ -1,5 +1,6 @@
 import com.google.auto.service.AutoService;
 import com.samskivert.mustache.Mustache;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -22,6 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 @SupportedAnnotationTypes("com.BetterValidator.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
+@Slf4j
 public class BetterValidatorProcessor extends AbstractProcessor {
 
     @Override
@@ -33,35 +35,41 @@ public class BetterValidatorProcessor extends AbstractProcessor {
 //            throw new RuntimeException(e);
 //        }
         // annotations should be size 1
+        //processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "DEBUG MESSG");
 
-        for (TypeElement a: annotations){
-            Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
+        //Logger logger = LoggerFactory.getLogger(BetterValidatorProcessor.class);
+        log.error("see this ffs?");
+        log.info("HEEEEEEEEEEEEEEEEEEEEEEEEERE");
+        throw new RuntimeException();
 
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "HELLO HERE SEE THIS", annotatedClasses.stream().toList().get(0));
-
-            if (annotatedClasses.isEmpty()) continue;
-
-
-            assertThat("how many annotated elements", annotatedClasses, hasSize(1));
-
-            String className = annotatedClasses.stream().toList().get(0).getSimpleName().toString();
-            List<String> fields1 = annotatedClasses.stream().toList().get(0)
-                    .getEnclosedElements()
-                    .stream()
-                    .map(Object::toString)
-                    .toList();
-            List<String> fields = fields1.stream()
-                    .filter(f -> !f.contains("("))
-                    .toList();
-            try {
-                System.out.print(1);
-                generateClass(className, fields);
-            } catch (IntrospectionException | IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return true;
+//        for (TypeElement a: annotations){
+//            Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
+//
+//            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "HELLO HERE SEE THIS", annotatedClasses.stream().toList().get(0));
+//
+//            if (annotatedClasses.isEmpty()) continue;
+//
+//
+//            assertThat("how many annotated elements", annotatedClasses, hasSize(1));
+//
+//            String className = annotatedClasses.stream().toList().get(0).getSimpleName().toString();
+//            List<String> fields1 = annotatedClasses.stream().toList().get(0)
+//                    .getEnclosedElements()
+//                    .stream()
+//                    .map(Object::toString)
+//                    .toList();
+//            List<String> fields = fields1.stream()
+//                    .filter(f -> !f.contains("("))
+//                    .toList();
+//            try {
+//                System.out.print(1);
+//                generateClass(className, fields);
+//            } catch (IntrospectionException | IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return true;
     }
 
     public void generateClass(String className, List<String> fields) throws IntrospectionException, IOException {
