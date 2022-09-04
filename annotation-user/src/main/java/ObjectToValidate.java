@@ -9,7 +9,6 @@ import java.util.Map;
 
 @Validator
 @Getter
-@Value.Immutable
 public class ObjectToValidate {
     private String word;
     public int num;

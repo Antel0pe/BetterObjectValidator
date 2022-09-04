@@ -3,8 +3,6 @@ import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,6 +39,5 @@ public class TemplateGenerator {
         writer.print(code);
     }
 
-    //public void copyClass(ClassLoader classLoader, )
 
 }

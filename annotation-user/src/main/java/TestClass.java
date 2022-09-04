@@ -8,29 +8,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class TestClass{
 
     public static void main(String[] args) {
-        ObjectToValidate objectToValidate = ObjectToValidate.builder()
-                .num(3)
-                .word("word")
-                .listOfNums(List.of(1, 2, 5))
-                .mapOfStrings(Map.of(
-                        "k1", List.of("v1", "v2"),
-                        "k2", List.of("v3", "v4")))
-                .build();
 
-        ValidationObject validationObject = ValidationObject.builder()
-                .asserts("validation obj is correct")
-                .num(equalTo(3), notNullValue())
-                .word(equalTo("word"))
-                .build();
-
-
-
-//        ObjectToValidateValidator validateValidator = com.BetterValidator.ObjectToValidateValidator.builder()
-//                .num(equalTo(2), notNullValue())
-//                .build();
-//
-//
-//        validateValidator.validate(objectToValidate);
 
     }
 }

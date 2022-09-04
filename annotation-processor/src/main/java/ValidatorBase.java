@@ -35,7 +35,6 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
                     f.setAccessible(true);
 
                     assertThat(String.format("Property '%s' is not valid", key),
-                            //PropertyUtils.getProperty(obj, key), m);
                             f.get(obj), m);
                 }
             } catch (Exception e) {
