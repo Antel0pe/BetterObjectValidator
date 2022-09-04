@@ -9,7 +9,6 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.beans.IntrospectionException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -25,26 +24,18 @@ import static org.hamcrest.Matchers.hasSize;
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @AutoService(Processor.class)
 public class BetterValidatorProcessor extends AbstractProcessor {
+    private final TemplateGenerator templateGenerator;
 
     public BetterValidatorProcessor(){
+        templateGenerator = new TemplateGenerator();
 
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env){
-//        File file = new File("hello.java");
-//        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "DEBUG MESSG");
-//        return true;
-
-        //annotations should be size 1
-        //processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "DEBUG MESSG");
-
-
 
         for (TypeElement a: annotations){
             Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
-
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "HELLO HERE SEE THIS", annotatedClasses.stream().toList().get(0));
 
             if (annotatedClasses.isEmpty()) continue;
 
@@ -61,9 +52,8 @@ public class BetterValidatorProcessor extends AbstractProcessor {
                     .filter(f -> !f.contains("("))
                     .toList();
             try {
-                System.out.print(1);
-                generateClass(className, fields);
-            } catch (IntrospectionException | IOException e) {
+                templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, fields);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

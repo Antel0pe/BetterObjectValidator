@@ -2,6 +2,9 @@ import org.hamcrest.Matcher;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 
 public class ValidationObject extends ValidatorBase<ValidationObject> {
     private String word;
@@ -24,6 +27,8 @@ public class ValidationObject extends ValidatorBase<ValidationObject> {
 
     @SafeVarargs
     public final ValidationObject num(Matcher<? super Object>... matchers){
+        Matcher<? super Object> m = equalTo(3);
+        assertThat(3, m);
         this.matchers.get("num").addAll(List.of(matchers));
         return this;
     }

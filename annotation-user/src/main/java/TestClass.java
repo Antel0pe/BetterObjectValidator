@@ -32,11 +32,6 @@ public class TestClass{
 //                .build();
 
         //log.error("something went wrong");
-        Logger logger = LoggerFactory.getLogger("SampleLogger");
-        logger.info("Hi This is my first SLF4J program");
-        ValidationObject validationObject = new ValidationObject();
-
-        BetterValidatorProcessor betterValidatorProcessor = new BetterValidatorProcessor();
 
         //objectToValidate.getListOfNums();
 
