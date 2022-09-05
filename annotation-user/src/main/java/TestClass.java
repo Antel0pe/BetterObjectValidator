@@ -15,7 +15,7 @@ public class TestClass{
 
         ObjectToValidateValidator objectToValidateValidator = ObjectToValidateValidator.builder()
                 .num(equalTo(1))
-                .listOfNums(contains(2))
+                .listOfNums(contains(1))
                 .build();
 
         objectToValidateValidator.validate(objectToValidate);
