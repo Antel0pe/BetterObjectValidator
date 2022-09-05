@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class ValidatorBase<T extends ValidatorBase<T>> {
-    protected Multimap<String, Matcher<? super Object>> matchers;
+    protected Multimap<String, Matcher<?>> matchers;
     protected String asserts;
 
     public ValidatorBase(){
@@ -27,15 +27,16 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
 
 
 
+    @SuppressWarnings("unchecked")
     public T validate(Object obj) {
         for (String key : matchers.keySet()) {
             try {
-                for (Matcher<? super Object> m : matchers.get(key)){
+                for (Matcher<?> m : matchers.get(key)){
                     Field f = obj.getClass().getDeclaredField(key);
                     f.setAccessible(true);
 
                     assertThat(String.format("Property '%s' is not valid", key),
-                            f.get(obj), m);
+                            f.get(obj), (Matcher<? super Object>) m);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
