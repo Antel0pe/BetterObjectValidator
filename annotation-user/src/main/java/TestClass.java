@@ -13,6 +13,7 @@ public class TestClass{
                 .listOfNums(List.of(1))
                 .build();
 
+
         ObjectToValidateValidator objectToValidateValidator = ObjectToValidateValidator.builder()
                 .num(equalTo(1))
                 .listOfNums(contains(1))
