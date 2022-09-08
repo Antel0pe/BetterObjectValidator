@@ -26,6 +26,23 @@ public class TestClass{
 
         objectToValidateValidator.validate(objectToValidate);
 
+        class Z{
+            Z() {}
+        }
+        class A extends Z{
+            A(){ }
+        }
+
+        class B extends A{
+            B(){ }
+        }
+
+        class C extends B{
+            C(){ }
+        }
+
+        List<? super B> l = new ArrayList<A>();
+        l.add(new B());
 
 
     }

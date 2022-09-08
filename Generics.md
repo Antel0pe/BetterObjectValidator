@@ -1,4 +1,5 @@
-class A
+class Z
+class A extends Z
 class B extends A
 class C extends B
 class D
@@ -31,19 +32,17 @@ can be treated as type B, not that they are all necessarily of type B.
 Case 3:
 List<? super B>
 
-This means that any super class OR child class of B can exist in this list. It is not the
-opposite of extends in that regard. Now the first part that any super class of B can exist
-in this list is straightforward enough. That's literally what the code says. The key thing
-here is that the generic wildcard describes what the type of the list is not what you can add.
-So again think about the "? super B" being evaluated to a specific type let's say B. It's 
-easy enough to see why you can add an object of class A. But because it's a list of type B,
-you can also add objects of type C and D due to polymorphism. See Case 1. 
+This means that any child class of B can be the final type of this list. This does not mean 
+that super classes of B can be stored in this list. The expression "? super B" can get 
+evaluated to let's say A. Now does it make sense to store objects of type Z in a list with 
+type A? Does it however make sense to store objects of type A, B, C, D in this list? Yes 
+because polymorphism. This wildcard like the extends keyword gives you a pseudo upper bound 
+of the type that this list can be. That is anything along the generational line along the
+class inheritance (imagine a grandparent, parent, child as a generational line).
 
-Again reading from this list is a trouble because what's the type of the variable that you are
-going to store the result in? The only guarantee you have is that it will be of type Object
-because it superclasses everything. You can put any super or child class because of a combination
-of "evaluation" or polymorphism.
-
+What this gives you is freedom to add any object so long as it can be treated as an object
+that is a super class of B. However we have no idea what the specific super class is so we 
+can not read from it.
 
 **Key thing**
 The generic wildcards represent what type the list can get "evaluated" down to, not what items
