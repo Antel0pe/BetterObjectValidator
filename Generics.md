@@ -1,22 +1,22 @@
-class Z
-class A extends Z
-class B extends A
-class C extends B
-class D
+class Z   
+class A extends Z     
+class B extends A     
+class C extends B     
+class D     
 
-List<B>
-List<? extends B>
-List<? super B>
+List<B>   
+List<? extends B>   
+List<? super B>   
 
 PECS 
 - Producer extends
 - Consumer super
 
-Case 1:
-List<B> = [new B()] 
-List<B> = [new C(), new D()]
+Case 1:   
+List<B> = [new B()]     
+List<B> = [new C(), new D()]   
 
-Case 2:
+Case 2:   
 List<? extends B> 
 
 The key thing to realize here is that the expression "? extends B" gets evaluated to a 
@@ -29,8 +29,8 @@ List<C>, does it make sense to add a object of type D?
 You can only read types from this list because the only thing we know is that all the elements
 can be treated as type B, not that they are all necessarily of type B.
 
-Case 3:
-List<? super B>
+Case 3:    
+List<? super B>   
 
 This means that any child class of B can be the final type of this list. This does not mean 
 that super classes of B can be stored in this list. The expression "? super B" can get 
@@ -44,7 +44,7 @@ What this gives you is freedom to add any object so long as it can be treated as
 that is a super class of B. However we have no idea what the specific super class is so we 
 can not read from it.
 
-**Key thing**
+**Key thing**   
 The generic wildcards represent what type the list can get "evaluated" down to, not what items
 can be added.
 
