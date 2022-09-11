@@ -1,16 +1,20 @@
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import lombok.AllArgsConstructor;
 import org.hamcrest.Matcher;
 
+
 import javax.crypto.interfaces.PBEKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
-public class TestClass{
+public class TestClass {
 
     public static void main(String[] args) {
         ObjectToValidate objectToValidate = ObjectToValidate.builder()
@@ -24,27 +28,66 @@ public class TestClass{
                 .listOfNums(contains(1))
                 .build();
 
+
         objectToValidateValidator.validate(objectToValidate);
-
-        class Z{
-            Z() {}
-        }
-        class A extends Z{
-            A(){ }
-        }
-
-        class B extends A{
-            B(){ }
-        }
-
-        class C extends B{
-            C(){ }
-        }
-
-        List<? super B> l = new ArrayList<A>();
-        l.add(new B());
+        //assertThat((java.util.List<String>) ((Object) List.of(1)), contains("3"));
 
 
     }
+
+    @FunctionalInterface
+    public interface MatchingAssertion {
+        abstract <T> Optional<String> match(T field);
+    }
+
+    public <T> Optional<String> helper(T field, Matcher<? super T> match) {
+        try {
+            assertThat("something", field, match);
+        } catch (Exception e){
+            return Optional.of(e.toString());
+        }
+
+        return Optional.empty();
+    }
+
+    public static class Matching {
+        List<Matcher<? super List<String>>> fieldName;
+        List<Matcher<? super Object>> secondField;
+
+        public List<Matcher<? super List<String>>> fieldName() {
+            return fieldName;
+        }
+
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
