@@ -1,12 +1,19 @@
 import com.google.auto.service.AutoService;
+import org.checkerframework.checker.signature.qual.ClassGetName;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 
 @SupportedAnnotationTypes("Validator")
@@ -24,22 +31,27 @@ public class BetterValidatorProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env){
 
         for (TypeElement a: annotations){
-            Set<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a);
+            List<? extends Element> annotatedClasses = env.getElementsAnnotatedWith(a).stream().toList();
 
-            if (annotatedClasses.isEmpty()) continue;
+            //if (annotatedClasses.isEmpty()) continue;
 
+            assertThat("should have only 1 annotated class", annotatedClasses, hasSize(1));
+            Element clazz = annotatedClasses.get(0);
 
+            String className = clazz.getSimpleName().toString() + "Validator";
+            List<TemplateGenerator.MethodInput> templateInput = new ArrayList<>();
 
-            String className = annotatedClasses.stream().toList().get(0).getSimpleName().toString();
-            List<String> fields = annotatedClasses.stream().toList().get(0)
-                    .getEnclosedElements()
-                    .stream()
-                    .map(Object::toString)
-                    .filter(f -> !f.contains("("))
-                    .toList();
+            for(Element e: clazz.getEnclosedElements()){
+                if (!e.toString().contains("(")){
+                    String fieldName = e.toString();
+                    String matcherType = "String";//processingEnv.getTypeUtils().asElement((TypeMirror) e).toString();
+
+                    templateInput.add(new TemplateGenerator.MethodInput(fieldName, matcherType));
+                }
+            }
 
             try {
-                templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, fields);
+                templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, templateInput);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,42 +1,103 @@
 import com.samskivert.mustache.Mustache;
+import com.squareup.javapoet.*;
 import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Parameterizable;
 import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Getter;
+import org.hamcrest.Matcher;
+import org.testng.annotations.Test;
 
 
 public class TemplateGenerator {
     private static final String templateFilePath = "GeneratedClassTemplate.mustache";
     private static final String templatePath = "GeneratedClassTemplate.mustache";
 
-
+    @Getter
     @AllArgsConstructor
-    public static class ValidatorFunctions{
-        public final String fieldName;
-        public final String matcherType;
+    public static class TemplateInput{
+        private final String className;
+        private List<MethodInput> functions;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class MethodInput{
+        private final String fieldName;
+        private final String matcherType;
     }
 
     public void generateClass(ClassLoader classLoader,
                               Filer filer,
                               String className,
-                              List<String> funcs) throws IOException {
-        final String generatedClassName = className + "Validator";
+                              List<MethodInput> vals) throws IOException {
+        //final String generatedClassName = className + "Validator";
 
 
         InputStreamReader templateFile = new InputStreamReader(
                 Objects.requireNonNull(classLoader.getResourceAsStream(templatePath)));
-        JavaFileObject generatedFile = filer.createSourceFile(generatedClassName);
+        JavaFileObject generatedFile = filer.createSourceFile(className);
         @Cleanup PrintWriter writer = new PrintWriter(generatedFile.openWriter());
 
-        String code = Mustache.compiler().compile(templateFile).execute(Map.of("class", generatedClassName, "fields", funcs));
+        String code = Mustache.compiler().compile(templateFile).execute(new Object() {
+            Object funcs = vals;
+            Object clazz = className;
+        });
+
         writer.print(code);
+
+    }
+
+    public void generateClass(Filer filer, TemplateInput templateInput) throws IOException {
+
+
+
+    }
+
+    private MethodSpec addFunction(String className, MethodInput methodInput){
+        ArrayTypeName arrayTypeName = ArrayTypeName.of(Matcher.class);
+        ClassName varargs = ClassName.get(Arrays.class);
+        ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Matcher.class), WildcardTypeName.supertypeOf(ClassName.get("", methodInput.getMatcherType())));
+        ParameterizedTypeName parameter = ParameterizedTypeName.get((ClassName) ArrayTypeName.of((TypeName) parameterizedTypeName));
+        ParameterSpec parameterSpec = ParameterSpec.builder(parameter, "m").build();
+
+        System.out.println(parameter);
+
+        MethodSpec method = MethodSpec.methodBuilder(methodInput.getFieldName())
+                .addAnnotation(SafeVarargs.class)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .returns(ClassName.get("", className))
+                .addParameter(parameterSpec)
+                .build();
+
+        return method;
+    }
+
+
+
+    @Test
+    public void test() throws IOException {
+        MethodInput methodInput = new MethodInput("field", "String");
+
+
+        TypeSpec test = TypeSpec.classBuilder("test")
+                .addModifiers(Modifier.PUBLIC)
+                .addMethod(addFunction("test", methodInput))
+                .build();
+
+        JavaFile javaFile = JavaFile.builder("test", test).build();
+
+        javaFile.writeTo(System.out);
+
+
     }
 
 

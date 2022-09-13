@@ -1,20 +1,20 @@
 import org.hamcrest.Matcher;
 import java.util.List;
 
-public class {{class}} extends ValidatorBase<{{class}}>{
-    public {{class}}() { super(); }
-    public static {{class}} builder(){ return new {{class}}(); }
+public class {{clazz}} extends ValidatorBase<{{clazz}}>{
+    public {{clazz}}() { super(); }
+    public static {{clazz}} builder(){ return new {{clazz}}(); }
 
     @Override
-    public {{class}} getThis() { return this; }
+    public {{clazz}} getThis() { return this; }
 
 
-    {{#fields}}
+    {{#funcs}}
     @SafeVarargs
-    public final {{class}} {{.}}(Matcher<?>... matchers){
+    public final {{clazz}} {{fieldName}}(Matcher<? super {{matcherType}}>... matchers){
         this.matchers.get("{{.}}").addAll(List.of(matchers));
         return this;
     }
-    {{/fields}}
+    {{/funcs}}
 
 }

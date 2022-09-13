@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class ValidatorBase<T extends ValidatorBase<T>> {
-    protected Multimap<String, Matcher<?>> matchers;
+    protected Multimap<String, Matcher> matchers;
     protected String asserts;
 
     public ValidatorBase(){
