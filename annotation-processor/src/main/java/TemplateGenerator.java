@@ -8,10 +8,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Parameterizable;
 import javax.tools.JavaFileObject;
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
 import lombok.Getter;
 import org.hamcrest.Matcher;
 import org.testng.annotations.Test;
@@ -62,23 +60,47 @@ public class TemplateGenerator {
 
     }
 
-    private MethodSpec addFunction(String className, MethodInput methodInput){
-        ArrayTypeName arrayTypeName = ArrayTypeName.of(Matcher.class);
-        ClassName varargs = ClassName.get(Arrays.class);
-        ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Matcher.class), WildcardTypeName.supertypeOf(ClassName.get("", methodInput.getMatcherType())));
-        ParameterizedTypeName parameter = ParameterizedTypeName.get((ClassName) ArrayTypeName.of((TypeName) parameterizedTypeName));
-        ParameterSpec parameterSpec = ParameterSpec.builder(parameter, "m").build();
-
-        System.out.println(parameter);
+    private MethodSpec addFunction(ClassName clazz, MethodInput methodInput){
+        ParameterizedTypeName inputParam = ParameterizedTypeName.get(
+                ClassName.get(Matcher.class),
+                WildcardTypeName.supertypeOf(ClassName.get("", methodInput.getMatcherType())));
 
         MethodSpec method = MethodSpec.methodBuilder(methodInput.getFieldName())
                 .addAnnotation(SafeVarargs.class)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .returns(ClassName.get("", className))
-                .addParameter(parameterSpec)
+                .returns(clazz)
+                .addParameter(ArrayTypeName.of(inputParam), "m")
+                .varargs()
+                .addStatement("this.matchers.putAll(List.of(m))")
+                .addStatement("return this")
                 .build();
 
         return method;
+    }
+
+    public Iterable<MethodSpec> boilerPlate(ClassName clazz){
+
+        return new ArrayList<>(List.of(
+                MethodSpec.constructorBuilder()
+                        .addModifiers(Modifier.PUBLIC)
+                        .addStatement("super()")
+                        .build(),
+
+                MethodSpec.methodBuilder("builder")
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                        .returns(clazz)
+                        .addStatement("return new $T()", clazz)
+                        .build(),
+
+                MethodSpec.methodBuilder("getThis")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .returns(clazz)
+                        .addStatement("return this")
+                        .build()
+
+                ));
+
     }
 
 
@@ -90,7 +112,8 @@ public class TemplateGenerator {
 
         TypeSpec test = TypeSpec.classBuilder("test")
                 .addModifiers(Modifier.PUBLIC)
-                .addMethod(addFunction("test", methodInput))
+                .addMethods(boilerPlate(ClassName.get("", "test")))
+                .addMethod(addFunction(ClassName.get("", "test"), methodInput))
                 .build();
 
         JavaFile javaFile = JavaFile.builder("test", test).build();
