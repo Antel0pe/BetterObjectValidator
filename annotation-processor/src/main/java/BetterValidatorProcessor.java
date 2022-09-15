@@ -1,4 +1,5 @@
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.ClassName;
 import org.checkerframework.checker.signature.qual.ClassGetName;
 
 import javax.annotation.processing.*;
@@ -52,6 +53,8 @@ public class BetterValidatorProcessor extends AbstractProcessor {
 
             try {
                 templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, templateInput);
+                templateGenerator.test(processingEnv.getFiler());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

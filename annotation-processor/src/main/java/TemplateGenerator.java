@@ -71,7 +71,7 @@ public class TemplateGenerator {
                 .returns(clazz)
                 .addParameter(ArrayTypeName.of(inputParam), "m")
                 .varargs()
-                .addStatement("this.matchers.putAll(List.of(m))")
+                .addStatement("this.matchers.putAll($S, $T.of(m))", methodInput.getFieldName(), List.class)
                 .addStatement("return this")
                 .build();
 
@@ -105,20 +105,24 @@ public class TemplateGenerator {
 
 
 
-    @Test
-    public void test() throws IOException {
+    public void test(Filer filer) throws IOException {
         MethodInput methodInput = new MethodInput("field", "String");
 
 
+
         TypeSpec test = TypeSpec.classBuilder("test")
+                .superclass(ParameterizedTypeName.get(
+                        ClassName.get(ValidatorBase.class),
+                        ClassName.get("", "test")))
                 .addModifiers(Modifier.PUBLIC)
                 .addMethods(boilerPlate(ClassName.get("", "test")))
                 .addMethod(addFunction(ClassName.get("", "test"), methodInput))
                 .build();
 
-        JavaFile javaFile = JavaFile.builder("test", test).build();
+        JavaFile javaFile = JavaFile.builder("", test).build();
 
         javaFile.writeTo(System.out);
+        javaFile.writeTo(filer);
 
 
     }
