@@ -5,6 +5,7 @@ import org.checkerframework.checker.signature.qual.ClassGetName;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.io.IOException;
@@ -40,20 +41,21 @@ public class BetterValidatorProcessor extends AbstractProcessor {
             Element clazz = annotatedClasses.get(0);
 
             String className = clazz.getSimpleName().toString() + "Validator";
-            List<TemplateGenerator.MethodInput> templateInput = new ArrayList<>();
+            List<TemplateGenerator.MethodInput> methodInput = new ArrayList<>();
 
             for(Element e: clazz.getEnclosedElements()){
-                if (!e.toString().contains("(")){
+                if (e.getKind() == ElementKind.FIELD){
                     String fieldName = e.toString();
-                    String matcherType = "String";//processingEnv.getTypeUtils().asElement((TypeMirror) e).toString();
+                    String matcherType = e.asType().toString();
 
-                    templateInput.add(new TemplateGenerator.MethodInput(fieldName, matcherType));
+                    methodInput.add(new TemplateGenerator.MethodInput(fieldName, matcherType));
                 }
             }
 
             try {
-                templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, templateInput);
-                templateGenerator.test(processingEnv.getFiler());
+                //templateGenerator.generateClass(getClass().getClassLoader(), processingEnv.getFiler(), className, templateInput);
+                //templateGenerator.test(processingEnv.getFiler());
+                templateGenerator.generateClass(processingEnv.getFiler(), new TemplateGenerator.TemplateInput(className, methodInput));
 
             } catch (IOException e) {
                 e.printStackTrace();

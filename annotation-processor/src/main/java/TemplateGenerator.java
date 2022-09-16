@@ -9,8 +9,10 @@ import javax.lang.model.element.Parameterizable;
 import javax.tools.JavaFileObject;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.hamcrest.Matcher;
 import org.testng.annotations.Test;
 
@@ -27,10 +29,11 @@ public class TemplateGenerator {
     }
 
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class MethodInput{
-        private final String fieldName;
-        private final String matcherType;
+        private String fieldName;
+        private String matcherType;
     }
 
     public void generateClass(ClassLoader classLoader,
@@ -54,9 +57,53 @@ public class TemplateGenerator {
 
     }
 
+    private void preprocessInput(TemplateInput templateInput){
+        for (MethodInput input: templateInput.getFunctions()){
+            ClassName inputClass = ClassName.get("", input.getMatcherType());
+
+            if (isPrimitiveType(inputClass)){
+                input.setMatcherType("Object");
+            }
+            //else if (inputClass.compareTo(ClassName.get(String.class)) == 0){
+//                input.setMatcherType("java.util.List<java.lang.String>");
+//            }
+
+        }
+    }
+
+    private boolean isPrimitiveType(TypeName clazz){
+        return clazz.toString().equals(TypeName.BOOLEAN.toString()) ||
+                clazz.toString().equals(TypeName.BYTE.toString()) ||
+                clazz.toString().equals(TypeName.SHORT.toString()) ||
+                clazz.toString().equals(TypeName.INT.toString()) ||
+                clazz.toString().equals(TypeName.LONG.toString()) ||
+                clazz.toString().equals(TypeName.CHAR.toString()) ||
+                clazz.toString().equals(TypeName.FLOAT.toString()) ||
+                clazz.toString().equals(TypeName.DOUBLE.toString());
+
+    }
+
     public void generateClass(Filer filer, TemplateInput templateInput) throws IOException {
+        ClassName clazzName = ClassName.get("", templateInput.getClassName());
 
+        preprocessInput(templateInput);
 
+        TypeSpec validatorType = TypeSpec.classBuilder(templateInput.getClassName())
+                .superclass(ParameterizedTypeName.get(
+                        ClassName.get(ValidatorBase.class),
+                        clazzName))
+                .addModifiers(Modifier.PUBLIC)
+                .addMethods(boilerPlate(clazzName))
+                .addMethods(templateInput.getFunctions()
+                        .stream()
+                        .map(f -> addFunction(clazzName, f))
+                        .collect(Collectors.toList()))
+                .build();
+
+        JavaFile javaFile = JavaFile.builder("", validatorType).build();
+
+        //javaFile.writeTo(System.out);
+        javaFile.writeTo(filer);
 
     }
 

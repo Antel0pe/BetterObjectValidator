@@ -38,6 +38,8 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
                     assertThat(String.format("Property '%s' is not valid", key),
                             f.get(obj), (Matcher<? super Object>) m);
                 }
+            } catch (NullPointerException e){
+                throw new RuntimeException(String.format("Cannot validate property %s since it is null. ", key));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
