@@ -1,12 +1,6 @@
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.hamcrest.Matcher;
+import java.util.List;
+import java.util.Map;
 
-
-import java.util.*;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
@@ -23,7 +17,7 @@ public class TestClass {
 
         ObjectToValidateValidator validator = ObjectToValidateValidator.builder()
                 .word(containsString("h"))
-                .num(equalTo(3), notNullValue())
+                .num(equalTo(4), notNullValue())
                 .listOfNums(contains(1, 2))
                 //.mapOfStrings(hasEntry("1", contains("1")))
                 .asserts("validates big obj")

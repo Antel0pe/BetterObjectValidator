@@ -26,8 +26,6 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
     public abstract T getThis();
 
 
-
-    @SuppressWarnings("unchecked")
     public T validate(Object obj) {
         for (String key : matchers.keySet()) {
             try {
@@ -35,7 +33,7 @@ public abstract class ValidatorBase<T extends ValidatorBase<T>> {
                     Field f = obj.getClass().getDeclaredField(key);
                     f.setAccessible(true);
 
-                    assertThat(String.format("Property '%s' is not valid", key),
+                    assertThat(String.format("Property '%s' is not valid\n%s", key, asserts),
                             f.get(obj), (Matcher<? super Object>) m);
                 }
             } catch (NullPointerException e){
