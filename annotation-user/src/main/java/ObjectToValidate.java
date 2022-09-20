@@ -14,7 +14,7 @@ public class ObjectToValidate {
     public int num;
 
     private List<Integer> listOfNums;
-    private Map<String, List<String>> mapOfStrings;
+    private Map<String, String> mapOfStrings;
 
     public ObjectToValidate(){
         super();
@@ -46,7 +46,7 @@ public class ObjectToValidate {
         return this;
     }
 
-    public ObjectToValidate mapOfStrings(Map<String, List<String>> mapOfStrings){
+    public ObjectToValidate mapOfStrings(Map<String, String> mapOfStrings){
         this.mapOfStrings = mapOfStrings;
         return this;
     }

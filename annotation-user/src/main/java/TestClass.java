@@ -11,15 +11,15 @@ public class TestClass {
                 .word("hello")
                 .num(3)
                 .listOfNums(List.of(1, 2))
-                .mapOfStrings(Map.of("1", List.of("1")))
+                .mapOfStrings(Map.of("1", "1"))
                 .build();
 
 
         ObjectToValidateValidator validator = ObjectToValidateValidator.builder()
                 .word(containsString("h"))
-                .num(equalTo(4), notNullValue())
+                .num(equalTo(3), notNullValue())
                 .listOfNums(contains(1, 2))
-                //.mapOfStrings(hasEntry("1", contains("1")))
+                .mapOfStrings(hasEntry("1", "1"))
                 .asserts("validates big obj")
                 .validate(obj);
     }
