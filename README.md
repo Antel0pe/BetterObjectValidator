@@ -1,24 +1,51 @@
-# BetterObjectValidator
-rough outline
+# Better Object Validator
 
-**Problem to Solve**
+This testing framework is specifically designed to help create large complex assertions, modify them on an assertion by assertion basis, and reuse them as needed.
 
-- One benefit of OOP is easily bundling together related logic/code together in an organized way
-- When writing automated tests with complex objects - end up writing lots of assert statements to check specific vals
-- Very ugly and annoying
-- Solution allows bundling of assertions and checks into an OOP object
-- Much more organized, cleaner, readable, and potentially reusable
+First let's say this is a class we want to test:
 
-**Design**
-- Create class of object to validate 
-- Annotate class with @Validate
-- Generates class with all the same fields
-  - Possible to make generated class inherit or does each class need its own functionality
-- Generated class name: original class name + Validator
-- Generated class has builder pattern to assign assertions to each field
-  - Can assign multiple assertions to each field
-    - on one line
-- Contains method that takes in original annotated class called validate()
-  - Makes sure each assertion is valid for input 
-  - Possible to do opposite? Makes sure each one is false?
-- Clone method to duplicate validation objects?
+```java
+@Validator
+public class TestObject {
+  private int num;
+  private String str;
+  private List<Boolean> booleanList;
+  private Map<Integer, String> integerStringMap;
+}
+```
+We've annotated this class with "@Validator" which will generate a sub class that can be used like:
+
+
+```java
+public static void main(String[] args) {
+  TestObject obj = TestObject.builder()
+                .word("hello")
+                .num(3)
+                .listOfNums(List.of(1, 2))
+                .mapOfStrings(Map.of("1", "1"))
+                .build();
+
+
+  TestObjectValidator validator = TestObjectValidator
+                .builder()
+                .word(containsString("h"))
+                .num(equalTo(3), notNullValue())
+                .listOfNums(contains(1, 2))
+                .mapOfStrings(hasEntry("1", "1"))
+                .asserts("Error message to be displayed if this assertion fails")
+                .validate(obj);
+}
+
+```
+Some things to point out:
+- The generated class is the annotated class name + Validator
+- It has all the same field names and takes Hamcrest matchers that apply to the field types
+- The actual assertion bit happens when you call validate() on the TestObject
+- You can set any of these fields after construction using setters and re-validate your object 
+
+
+Todos:
+- Better README with more details on use and exceptions
+- Add to Maven Central
+- Tests
+- Github actions to release versions
